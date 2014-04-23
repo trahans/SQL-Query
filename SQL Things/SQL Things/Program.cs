@@ -16,6 +16,8 @@ namespace SQL_Things
 
         static void ServerConnect()
         {
+            List<String> rockNames = new List<string>();
+
             SqlConnection myConnection = new SqlConnection("server=localhost;" +
                                        "Trusted_Connection=yes;" +
                                        "database=TSE_Connector2; " +
@@ -23,12 +25,34 @@ namespace SQL_Things
             try
             {
                 myConnection.Open();
-                Console.WriteLine("Well done!");
+                Console.WriteLine("Connection Established");
+
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "SELECT RockName FROM dbo.tbl_DS_ConvertedBilling WHERE ReportedRate <> ImportedRate";
+                cmd.Connection = myConnection;
+
+                reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                       Console.WriteLine("{0}\t", reader.GetString(0));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No rows found.");
+                }
+
+                myConnection.Close();
                 Console.ReadLine();
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("You failed!" + ex.Message);
+                Console.WriteLine("Connection Failed" + ex.Message);
                 Console.ReadLine();
             }
 
