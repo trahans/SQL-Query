@@ -1,1 +1,6 @@
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\SQL Things.exe.config
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\SQL Things.exe
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\SQL Things.pdb
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.csprojResolveAssemblyReference.cache
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.exe
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.pdb
