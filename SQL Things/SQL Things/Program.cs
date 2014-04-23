@@ -39,7 +39,18 @@ namespace SQL_Things
                 {
                     while (reader.Read())
                     {
-                       Console.WriteLine("{0}\t", reader.GetString(0));
+                       string rockName = reader.GetString(0);
+                       bool containsItem = rockNames.Any(name => name == rockName);
+
+                       if (!containsItem)
+                       {
+                           rockNames.Add(rockName);
+                       }
+                    }
+
+                    foreach (string name in rockNames)
+                    {
+                        Console.WriteLine(name);
                     }
                 }
                 else
