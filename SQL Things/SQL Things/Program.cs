@@ -30,7 +30,7 @@ namespace SQL_Things
                 SqlCommand cmd = new SqlCommand();
                 SqlDataReader reader;
 
-                cmd.CommandText = "SELECT RockName FROM dbo.tbl_DS_ConvertedBilling WHERE ReportedRate <> ImportedRate";
+                cmd.CommandText = "SELECT DISTINCT RockName FROM dbo.tbl_DS_ConvertedBilling WHERE ReportedRate <> ImportedRate";
                 cmd.Connection = myConnection;
 
                 reader = cmd.ExecuteReader();
@@ -39,19 +39,14 @@ namespace SQL_Things
                 {
                     while (reader.Read())
                     {
-                       string rockName = reader.GetString(0);
-                       bool containsItem = rockNames.Any(name => name == rockName);
-
-                       if (!containsItem)
-                       {
-                           rockNames.Add(rockName);
-                       }
+                        rockNames.Add(reader.GetString(0));
+                        //Console.WriteLine(reader.GetString(0));
+                        //System.IO.File.WriteAllLines(@"C:\Users\Public\TestFolder\WriteLines.txt",  );
                     }
 
-                    foreach (string name in rockNames)
-                    {
-                        Console.WriteLine(name);
-                    }
+                    string[] nameString = rockNames.ToArray();
+                    System.IO.File.WriteAllLines(@"C:\Users\christopher.grimm\Desktop\rocknames.txt", nameString);
+
                 }
                 else
                 {
