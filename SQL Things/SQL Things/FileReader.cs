@@ -8,18 +8,23 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SQL_Things
 {
-    class CSVReader
+    class FileReader
     {
 
         public static string[] ReadCSV (string filePath)
         {
-            StreamReader reader = new StreamReader(File.OpenRead(filePath));
             string[] csvItems;
-            
-            string csvInput = reader.ReadLine();
+            string csvInput = ReadTextFile(filePath);
             csvItems = csvInput.Split(',');
-
             return csvItems;
+        }
+
+        public static string ReadTextFile (string filePath)
+        {
+            StreamReader reader = new StreamReader(File.OpenRead(filePath));
+            string textItem;
+            textItem = reader.ReadLine();
+            return textItem;
         }
     }
 }

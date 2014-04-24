@@ -36,7 +36,7 @@ namespace SQL_Things
 
         void GrabStateWhitelist()
         {
-            stateWhitelist = CSVReader.ReadCSV(@"State Whitelist.csv");
+            stateWhitelist = FileReader.ReadCSV(@"State Whitelist.csv");
             foreach (string state in stateWhitelist)
             {
                 Console.WriteLine(state);
@@ -63,12 +63,13 @@ namespace SQL_Things
         void GrabForms()
         {
             List<String> rockNames = new List<string>();
+            List<String> states = new List<string>();
             SqlCommand cmd = new SqlCommand();
             SqlDataReader reader;
 
-            string[] query = CSVReader.ReadCSV(@"SQL Query.csv");
+            string query = FileReader.ReadTextFile(@"SQL Query.csv");
 
-            cmd.CommandText = query[0];
+            cmd.CommandText = query;
             cmd.Connection = serverConnection;
 
             reader = cmd.ExecuteReader();
@@ -78,9 +79,10 @@ namespace SQL_Things
                 while (reader.Read())
                 {
                     rockNames.Add(reader.GetString(0));
+                    states.Add(reader.GetString(1));
                 }
 
-                WriteRockNamesToFile(rockNames);
+                WriteRockNamesToFile(rockNames, states);
 
             }
             else
@@ -89,10 +91,16 @@ namespace SQL_Things
             }
         }
 
-        void WriteRockNamesToFile(List<String> rockNames)
+        void WriteRockNamesToFile(List<String> rockNames, List<String> states)
         {
-            string[] names = rockNames.ToArray();
-            System.IO.File.WriteAllLines(@"rocknames.txt", names);
+            string[] rocks = rockNames.ToArray();
+
+            for (int i = 0; i < rocks.Length; i++)
+            {
+                rocks[i] = states[i] + " " + rocks[i];
+            }
+
+            System.IO.File.WriteAllLines(@"rocknames.txt", rocks);
         }
     }
 }
