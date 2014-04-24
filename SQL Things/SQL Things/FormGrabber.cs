@@ -13,6 +13,9 @@ namespace SQL_Things
     {
         SqlConnection serverConnection;
         string[] stateWhitelist;
+        string[] rockNameWhitelist;
+        List<String> rockNames = new List<string>();
+        List<String> states = new List<string>();
 
         public FormGrabber()
         {
@@ -27,6 +30,7 @@ namespace SQL_Things
             if (OpenServerConnection())
             {
                 GrabStateWhitelist();
+                GrabRockNameWhitelist();
                 GrabForms();
                 serverConnection.Close();
                 Console.WriteLine("Done");
@@ -37,10 +41,11 @@ namespace SQL_Things
         void GrabStateWhitelist()
         {
             stateWhitelist = FileReader.ReadCSV(@"State Whitelist.csv");
-            foreach (string state in stateWhitelist)
-            {
-                Console.WriteLine(state);
-            }
+        }
+
+        void GrabRockNameWhitelist()
+        {
+            rockNameWhitelist = FileReader.ReadCSV(@"RockName Whitelist.csv");
         }
 
         bool OpenServerConnection()
@@ -62,8 +67,6 @@ namespace SQL_Things
 
         void GrabForms()
         {
-            List<String> rockNames = new List<string>();
-            List<String> states = new List<string>();
             SqlCommand cmd = new SqlCommand();
             SqlDataReader reader;
 
@@ -76,14 +79,8 @@ namespace SQL_Things
 
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    rockNames.Add(reader.GetString(0));
-                    states.Add(reader.GetString(1));
-                }
-
-                WriteRockNamesToFile(rockNames, states);
-
+                ReadSQL(reader);
+                WriteRockNamesToFile();
             }
             else
             {
@@ -91,7 +88,46 @@ namespace SQL_Things
             }
         }
 
-        void WriteRockNamesToFile(List<String> rockNames, List<String> states)
+        void ReadSQL(SqlDataReader reader)
+        {
+            while (reader.Read())
+            {
+                string state = reader.GetString(1);
+                string rock = reader.GetString(0);
+
+                if (!CheckStateWhitelist(state) && !CheckRockNameWhitelist(rock))
+                {
+                    rockNames.Add(rock);
+                    states.Add(state);
+                }
+            }
+        }
+
+        bool CheckStateWhitelist (string state)
+        {
+            foreach (string excludedState in stateWhitelist)
+            {
+                if (excludedState == state)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool CheckRockNameWhitelist (string rock)
+        {
+            foreach (string excludedRock in rockNameWhitelist)
+            {
+                if (excludedRock == rock)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void WriteRockNamesToFile()
         {
             string[] rocks = rockNames.ToArray();
 
@@ -100,7 +136,7 @@ namespace SQL_Things
                 rocks[i] = states[i] + " " + rocks[i];
             }
 
-            System.IO.File.WriteAllLines(@"rocknames.txt", rocks);
+            System.IO.File.WriteAllLines(@"RockNames.txt", rocks);
         }
     }
 }
