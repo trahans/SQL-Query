@@ -11,11 +11,16 @@ namespace SQL_Things
 {
     class FormGrabber
     {
+        struct Form
+        {
+            public string state;
+            public string rockName;
+        }
+
         SqlConnection serverConnection;
         string[] stateWhitelist;
         string[] rockNameWhitelist;
-        List<String> rockNames = new List<string>();
-        List<String> states = new List<string>();
+        List<Form> forms = new List<Form>();
 
         public FormGrabber()
         {
@@ -29,13 +34,57 @@ namespace SQL_Things
         {
             if (OpenServerConnection())
             {
-                GrabStateWhitelist();
-                GrabRockNameWhitelist();
                 GrabForms();
                 serverConnection.Close();
                 Console.WriteLine("Done");
             }
-            Console.ReadLine();
+        }
+
+        bool OpenServerConnection()
+        {
+            try
+            {
+                serverConnection.Open();
+                Console.WriteLine("Connection Established");
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Connection Failed" + ex.Message);
+                Console.ReadLine();
+                return false;
+            }
+        }
+
+        void GrabForms()
+        {
+            SqlDataReader reader;
+            reader = GrabSQLQuery();
+
+            if (reader.HasRows)
+            {
+                GrabStateWhitelist();
+                GrabRockNameWhitelist();
+                ReadSQL(reader);
+                WriteFormsToFile();
+            }
+            else
+            {
+                Console.WriteLine("No rows found.");
+                Console.ReadLine();
+            }
+        }
+
+        SqlDataReader GrabSQLQuery()
+        {
+            SqlCommand cmd = new SqlCommand();
+
+            string query = FileReader.ReadTextFile(@"SQL Query.csv");
+
+            cmd.CommandText = query;
+            cmd.Connection = serverConnection;
+
+            return cmd.ExecuteReader();
         }
 
         void GrabStateWhitelist()
@@ -46,59 +95,19 @@ namespace SQL_Things
         void GrabRockNameWhitelist()
         {
             rockNameWhitelist = FileReader.ReadCSV(@"RockName Whitelist.csv");
-        }
-
-        bool OpenServerConnection()
-        {
-            try
-            {
-                serverConnection.Open();
-                Console.WriteLine("Connection Established");
-
-                return true;
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine("Connection Failed" + ex.Message);
-
-                return false;
-            }
-        }
-
-        void GrabForms()
-        {
-            SqlCommand cmd = new SqlCommand();
-            SqlDataReader reader;
-
-            string query = FileReader.ReadTextFile(@"SQL Query.csv");
-
-            cmd.CommandText = query;
-            cmd.Connection = serverConnection;
-
-            reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                ReadSQL(reader);
-                WriteRockNamesToFile();
-            }
-            else
-            {
-                Console.WriteLine("No rows found.");
-            }
-        }
+        }   
 
         void ReadSQL(SqlDataReader reader)
         {
             while (reader.Read())
             {
-                string state = reader.GetString(1);
-                string rock = reader.GetString(0);
+                Form incomingForm;
+                incomingForm.rockName = reader.GetString(0);
+                incomingForm.state = reader.GetString(1);
 
-                if (!CheckStateWhitelist(state) && !CheckRockNameWhitelist(rock))
+                if (!CheckStateWhitelist(incomingForm.state) && !CheckRockNameWhitelist(incomingForm.rockName))
                 {
-                    rockNames.Add(rock);
-                    states.Add(state);
+                    forms.Add(incomingForm);
                 }
             }
         }
@@ -127,16 +136,17 @@ namespace SQL_Things
             return false;
         }
 
-        void WriteRockNamesToFile()
+        void WriteFormsToFile()
         {
-            string[] rocks = rockNames.ToArray();
+            int length = forms.Count;
+            string[] outputForms = new string[length];
 
-            for (int i = 0; i < rocks.Length; i++)
+            for (int i = 0; i < outputForms.Length; i++)
             {
-                rocks[i] = states[i] + " " + rocks[i];
+                outputForms[i] = forms[i].state + " " + forms[i].rockName;
             }
 
-            System.IO.File.WriteAllLines(@"RockNames.txt", rocks);
+            System.IO.File.WriteAllLines(@"RockNames.txt", outputForms);
         }
     }
 }
