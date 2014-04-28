@@ -147,6 +147,17 @@ namespace SQL_Things
             }
 
             System.IO.File.WriteAllLines(@"RockNames.txt", outputForms);
+
+            List<String> rockNames = new List<String>();
+            foreach (Form form in forms)
+            {
+                rockNames.Add(form.rockName);
+            }
+
+            SheetWriter sheetWriter = new SheetWriter();
+            sheetWriter.WriteSheet();
+            sheetWriter.WriteRockNames(rockNames);
+            sheetWriter.SaveSheet();
         }
     }
 }
