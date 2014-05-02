@@ -10,17 +10,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 namespace SQL_Things
 {
     class FormGrabber
-    {
-        struct Form
-        {
-            public string state;
-            public string rockName;
-        }
+    { 
 
         SqlConnection serverConnection;
         string[] stateWhitelist;
         string[] rockNameWhitelist;
         List<Form> forms = new List<Form>();
+        Dictionary<string,string> rockNamesAndFormNames = new Dictionary<string,string>();
 
         public FormGrabber()
         {
@@ -35,6 +31,8 @@ namespace SQL_Things
             if (OpenServerConnection())
             {
                 GrabForms();
+                GrabFormNames();
+                WriteFormsToFile();
                 serverConnection.Close();
                 Console.WriteLine("Done");
             }
@@ -58,28 +56,57 @@ namespace SQL_Things
 
         void GrabForms()
         {
-            SqlDataReader reader;
-            reader = GrabSQLQuery();
+            SqlDataReader queryRockNames;
+            queryRockNames = GrabSQLQueryFromFile(@"SQL Query For RockNames.txt");
 
-            if (reader.HasRows)
+            if (queryRockNames.HasRows)
             {
                 GrabStateWhitelist();
                 GrabRockNameWhitelist();
-                ReadSQL(reader);
-                WriteFormsToFile();
+                ReadRockNames(queryRockNames);
             }
             else
             {
                 Console.WriteLine("No rows found.");
                 Console.ReadLine();
             }
+
+            queryRockNames.Close();
         }
 
-        SqlDataReader GrabSQLQuery()
+        void GrabFormNames()
+        {
+            SqlDataReader queryFormNames;
+            queryFormNames = GrabSQLQueryFromFile(@"SQL Query For FormNames.txt");
+
+            if (queryFormNames.HasRows)
+            {
+                ReadFormNames(queryFormNames);
+            }
+            else
+            {
+                Console.WriteLine("No rows found.");
+                Console.ReadLine();
+            }
+
+            queryFormNames.Close();
+
+            TranscribeFormNames();
+        }
+
+        void TranscribeFormNames()
+        {
+            foreach (Form form in forms)
+            {
+                form.FormName = rockNamesAndFormNames[form.RockName];
+            }
+        }
+
+        SqlDataReader GrabSQLQueryFromFile(string filePath)
         {
             SqlCommand cmd = new SqlCommand();
 
-            string query = FileReader.ReadTextFile(@"SQL Query.csv");
+            string query = FileReader.ReadTextFile(filePath);
 
             cmd.CommandText = query;
             cmd.Connection = serverConnection;
@@ -97,18 +124,27 @@ namespace SQL_Things
             rockNameWhitelist = FileReader.ReadCSV(@"RockName Whitelist.csv");
         }   
 
-        void ReadSQL(SqlDataReader reader)
+        void ReadRockNames(SqlDataReader reader)
         {
             while (reader.Read())
             {
-                Form incomingForm;
-                incomingForm.rockName = reader.GetString(0);
-                incomingForm.state = reader.GetString(1);
+                Form incomingForm = new Form();
+                incomingForm.RockName = reader.GetString(0);
+                //incomingForm.SelectedRate = reader.GetDecimal(1);
+                //incomingForm.ImportedRate = reader.GetDecimal(2);
 
-                if (!CheckStateWhitelist(incomingForm.state) && !CheckRockNameWhitelist(incomingForm.rockName))
+                if (!CheckRockNameWhitelist(incomingForm.RockName))
                 {
                     forms.Add(incomingForm);
                 }
+            }
+        }
+
+        void ReadFormNames(SqlDataReader reader)
+        {
+            while (reader.Read())
+            {
+                rockNamesAndFormNames.Add(reader.GetString(0), reader.GetString(1));
             }
         }
 
@@ -143,20 +179,25 @@ namespace SQL_Things
 
             for (int i = 0; i < outputForms.Length; i++)
             {
-                outputForms[i] = forms[i].state + " " + forms[i].rockName;
+                outputForms[i] = forms[i].RockName + " " + forms[i].SelectedRate.ToString() + " " + forms[i].ImportedRate.ToString();
             }
 
             System.IO.File.WriteAllLines(@"RockNames.txt", outputForms);
 
+            forms = forms.OrderBy(o => o.FormName).ToList();
+
             List<String> rockNames = new List<String>();
+            List<String> formNames = new List<String>();
             foreach (Form form in forms)
             {
-                rockNames.Add(form.rockName);
+                rockNames.Add(form.RockName);
+                formNames.Add(form.FormName);
             }
 
             SheetWriter sheetWriter = new SheetWriter();
             sheetWriter.WriteSheet();
-            sheetWriter.WriteRockNames(rockNames);
+            sheetWriter.WriteToColumn(SheetWriter.Column.RockName, rockNames);
+            sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
             sheetWriter.SaveSheet();
         }
     }

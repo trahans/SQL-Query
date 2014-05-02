@@ -14,6 +14,16 @@ namespace SQL_Things
         Excel.Application excelApp;
         Excel.Workbooks excelWorkbooks;
         Excel.Workbook excelWorkbook;
+
+        public enum Column
+        {
+            RockName = 1,
+            FormName = 2,
+            PassFail = 3,
+            Developer = 4,
+            QA = 5,
+            Notes = 6
+        }
         
 
         public SheetWriter()
@@ -35,22 +45,14 @@ namespace SQL_Things
             FormatWorksheet(currentWorksheet);
         }
 
-        public void WriteRockNames(List<String> rockNames)
+        public void WriteToColumn(Column column, List<String> items)
         {
             Excel.Worksheet currentWorksheet = (Excel.Worksheet)excelWorkbook.ActiveSheet;
 
-            for (int i = 0; i < rockNames.Count; i++)
+            for (int i = 0; i < items.Count; i++)
             {
-                string cell = CellNumber("A", i + 2);
-                currentWorksheet.get_Range(cell).Formula = rockNames[i];
+                currentWorksheet.Cells[i + 2, column] = items[i];
             }
-        }
-
-        string CellNumber(string column, int row)
-        {
-            string cell;
-            cell = column + row.ToString();
-            return cell;
         }
 
         public void SaveSheet()
@@ -61,19 +63,19 @@ namespace SQL_Things
 
         void FormatWorksheet(Excel.Worksheet worksheet)
         {
-            String titleRockName = @"RockName";
-            String titleFormName = @"Form Name";
-            String titlePassFail = @"Pass/Fail/Pass with Condition";
-            String titleDevSig = @"Developer";
-            String titleQASig = @"QA";
-            String titleNotes = @"Notes";
+            String rockNameTitle = @"RockName";
+            String formNameTitle = @"Form Name";
+            String passFailTitle = @"Pass/Fail/Pass with Condition";
+            String devSigTitle = @"Developer";
+            String qaSigTitle = @"QA";
+            String notesTitle = @"Notes";
 
-            worksheet.get_Range("A1").Formula = titleRockName;
-            worksheet.get_Range("B1").Formula = titleFormName;
-            worksheet.get_Range("C1").Formula = titlePassFail;
-            worksheet.get_Range("D1").Formula = titleDevSig;
-            worksheet.get_Range("E1").Formula = titleQASig;
-            worksheet.get_Range("F1").Formula = titleNotes;
+            worksheet.Cells[1, Column.RockName] = rockNameTitle;
+            worksheet.Cells[1, Column.FormName] = formNameTitle;
+            worksheet.Cells[1, Column.PassFail] = passFailTitle;
+            worksheet.Cells[1, Column.Developer] = devSigTitle;
+            worksheet.Cells[1, Column.QA] = qaSigTitle;
+            worksheet.Cells[1, Column.Notes] = notesTitle;
 
         }
     }
