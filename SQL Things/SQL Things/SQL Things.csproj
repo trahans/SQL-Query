@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="FileReader.cs" />
     <Compile Include="Form.cs" />
     <Compile Include="FormGrabber.cs" />
@@ -52,6 +53,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SheetWriter.cs" />
+    <Compile Include="SQLGrabber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

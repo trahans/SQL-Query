@@ -13,9 +13,11 @@ namespace SQL_Things
     { 
 
         SqlConnection serverConnection;
-        string[] stateWhitelist;
-        string[] rockNameWhitelist;
         List<Form> forms = new List<Form>();
+        List<string> rockNames = new List<string>();
+        List<string> missmatchingForms = new List<string>();
+        List<string> blendedRates = new List<string>();
+        List<string> testPassFail = new List<string>();
         Dictionary<string,string> rockNamesAndFormNames = new Dictionary<string,string>();
 
         public FormGrabber()
@@ -26,15 +28,19 @@ namespace SQL_Things
                                                  "connection timeout=30");
         }
 
-        public void GrabMissmatchingForms()
+        public void CheckForms()
         {
             if (OpenServerConnection())
             {
-                GrabForms();
-                GrabFormNames();
+                QueryServer();
+                CreateFormsFromRockNames();
+                TranscribeFormNamesToForms();
+                OrderFormsByFormName();
+                FailMissmatchingRates();
+                TESTpassFail();
+                PassBlendedRates();
                 WriteFormsToFile();
-                serverConnection.Close();
-                Console.WriteLine("Done");
+                CloseServerConnection();
             }
         }
 
@@ -54,47 +60,25 @@ namespace SQL_Things
             }
         }
 
-        void GrabForms()
+        void QueryServer()
         {
-            SqlDataReader queryRockNames;
-            queryRockNames = GrabSQLQueryFromFile(@"SQL Query For RockNames.txt");
-
-            if (queryRockNames.HasRows)
-            {
-                GrabStateWhitelist();
-                GrabRockNameWhitelist();
-                ReadRockNames(queryRockNames);
-            }
-            else
-            {
-                Console.WriteLine("No rows found.");
-                Console.ReadLine();
-            }
-
-            queryRockNames.Close();
+            rockNames = SQLGrabber.ListFromQuery(serverConnection, Constants.RockNameQuery);
+            rockNamesAndFormNames = SQLGrabber.DictionaryFromQuery(serverConnection, Constants.FormNameQuery);
+            missmatchingForms = SQLGrabber.ListFromQuery(serverConnection, Constants.MissmatchingRatesQuery);
+            blendedRates = SQLGrabber.ListFromQuery(serverConnection, Constants.BlendedRatesQuery);
         }
 
-        void GrabFormNames()
+        void CreateFormsFromRockNames()
         {
-            SqlDataReader queryFormNames;
-            queryFormNames = GrabSQLQueryFromFile(@"SQL Query For FormNames.txt");
-
-            if (queryFormNames.HasRows)
+            foreach (string rockName in rockNames)
             {
-                ReadFormNames(queryFormNames);
+                Form newForm = new Form();
+                newForm.RockName = rockName;
+                forms.Add(newForm);
             }
-            else
-            {
-                Console.WriteLine("No rows found.");
-                Console.ReadLine();
-            }
-
-            queryFormNames.Close();
-
-            TranscribeFormNames();
         }
 
-        void TranscribeFormNames()
+        void TranscribeFormNamesToForms()
         {
             foreach (Form form in forms)
             {
@@ -102,103 +86,72 @@ namespace SQL_Things
             }
         }
 
-        SqlDataReader GrabSQLQueryFromFile(string filePath)
+        void OrderFormsByFormName()
         {
-            SqlCommand cmd = new SqlCommand();
-
-            string query = FileReader.ReadTextFile(filePath);
-
-            cmd.CommandText = query;
-            cmd.Connection = serverConnection;
-
-            return cmd.ExecuteReader();
+            forms = forms.OrderBy(o => o.FormName).ToList();
         }
 
-        void GrabStateWhitelist()
+        void FailMissmatchingRates()
         {
-            stateWhitelist = FileReader.ReadCSV(@"State Whitelist.csv");
-        }
-
-        void GrabRockNameWhitelist()
-        {
-            rockNameWhitelist = FileReader.ReadCSV(@"RockName Whitelist.csv");
-        }   
-
-        void ReadRockNames(SqlDataReader reader)
-        {
-            while (reader.Read())
+            foreach (Form form in forms)
             {
-                Form incomingForm = new Form();
-                incomingForm.RockName = reader.GetString(0);
-                //incomingForm.SelectedRate = reader.GetDecimal(1);
-                //incomingForm.ImportedRate = reader.GetDecimal(2);
-
-                if (!CheckRockNameWhitelist(incomingForm.RockName))
+                foreach (string rockName in missmatchingForms)
                 {
-                    forms.Add(incomingForm);
+                    if (form.RockName == rockName)
+                    {
+                        form.PassFail = false;
+                    }
                 }
+                
             }
+            
         }
 
-        void ReadFormNames(SqlDataReader reader)
+        void TESTpassFail()
         {
-            while (reader.Read())
-            {
-                rockNamesAndFormNames.Add(reader.GetString(0), reader.GetString(1));
-            }
+            foreach (Form form in forms)
+                testPassFail.Add((form.PassFail == true) ? "Pass" : "Fail");
         }
 
-        bool CheckStateWhitelist (string state)
+        void PassBlendedRates()
         {
-            foreach (string excludedState in stateWhitelist)
+            foreach (Form form in forms)
             {
-                if (excludedState == state)
+                foreach (string rockName in blendedRates)
                 {
-                    return true;
-                }
+                    if (form.RockName == rockName)
+                        form.PassFail = true;
+                }        
             }
-            return false;
-        }
-
-        bool CheckRockNameWhitelist (string rock)
-        {
-            foreach (string excludedRock in rockNameWhitelist)
-            {
-                if (excludedRock == rock)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         void WriteFormsToFile()
         {
-            int length = forms.Count;
-            string[] outputForms = new string[length];
 
-            for (int i = 0; i < outputForms.Length; i++)
-            {
-                outputForms[i] = forms[i].RockName + " " + forms[i].SelectedRate.ToString() + " " + forms[i].ImportedRate.ToString();
-            }
+            List<string> rockNames = new List<string>();
+            List<string> formNames = new List<string>();
+            List<string> passFail = new List<string>();
 
-            System.IO.File.WriteAllLines(@"RockNames.txt", outputForms);
-
-            forms = forms.OrderBy(o => o.FormName).ToList();
-
-            List<String> rockNames = new List<String>();
-            List<String> formNames = new List<String>();
             foreach (Form form in forms)
             {
                 rockNames.Add(form.RockName);
                 formNames.Add(form.FormName);
+                passFail.Add((form.PassFail == true) ? "Pass" : "Fail");
             }
 
             SheetWriter sheetWriter = new SheetWriter();
             sheetWriter.WriteSheet();
             sheetWriter.WriteToColumn(SheetWriter.Column.RockName, rockNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
+            sheetWriter.WriteToColumn(SheetWriter.Column.PassFail, passFail);
+            sheetWriter.WriteToColumn(SheetWriter.Column.Developer, testPassFail);
             sheetWriter.SaveSheet();
+        }
+
+        void CloseServerConnection()
+        {
+            serverConnection.Close();
+            Console.WriteLine("Connection Closed");
         }
     }
 }
