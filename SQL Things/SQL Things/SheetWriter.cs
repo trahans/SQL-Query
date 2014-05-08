@@ -35,14 +35,28 @@ namespace SQL_Things
         public void WriteSheet()
         {
 
-            //object misValue = System.Reflection.Missing.Value;
-
             excelWorkbook = excelApp.Application.Workbooks.Add();
             excelWorkbooks = excelApp.Workbooks;
 
             Excel.Worksheet currentWorksheet = (Excel.Worksheet)excelWorkbook.ActiveSheet;
  
             FormatWorksheet(currentWorksheet);
+        }
+
+        public void NameSheet(string name)
+        {
+            Excel.Worksheet currentWorksheet = (Excel.Worksheet)excelWorkbook.ActiveSheet;
+            currentWorksheet.Name = name;
+        }
+
+        public void DeleteExtraSheets()
+        {
+            for (int i = excelWorkbook.Worksheets.Count; i > 1; i--)
+            {
+                Excel.Worksheet xlSheet;
+                xlSheet = (Excel.Worksheet)excelWorkbook.Worksheets.get_Item(i);
+                xlSheet.Delete();
+            }
         }
 
         public void WriteToColumn(Column column, List<String> items)

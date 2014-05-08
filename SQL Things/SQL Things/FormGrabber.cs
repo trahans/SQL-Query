@@ -17,7 +17,6 @@ namespace SQL_Things
         List<string> rockNames = new List<string>();
         List<string> missmatchingForms = new List<string>();
         List<string> blendedRates = new List<string>();
-        List<string> testPassFail = new List<string>();
         Dictionary<string,string> rockNamesAndFormNames = new Dictionary<string,string>();
 
         public FormGrabber()
@@ -37,7 +36,6 @@ namespace SQL_Things
                 TranscribeFormNamesToForms();
                 OrderFormsByFormName();
                 FailMissmatchingRates();
-                TESTpassFail();
                 PassBlendedRates();
                 WriteFormsToFile();
                 CloseServerConnection();
@@ -107,12 +105,6 @@ namespace SQL_Things
             
         }
 
-        void TESTpassFail()
-        {
-            foreach (Form form in forms)
-                testPassFail.Add((form.PassFail == true) ? "Pass" : "Fail");
-        }
-
         void PassBlendedRates()
         {
             foreach (Form form in forms)
@@ -131,12 +123,14 @@ namespace SQL_Things
             List<string> rockNames = new List<string>();
             List<string> formNames = new List<string>();
             List<string> passFail = new List<string>();
+            List<string> developer = new List<string>();
 
             foreach (Form form in forms)
             {
                 rockNames.Add(form.RockName);
                 formNames.Add(form.FormName);
                 passFail.Add((form.PassFail == true) ? "Pass" : "Fail");
+                developer.Add((form.PassFail == true) ? "PtS" : "");
             }
 
             SheetWriter sheetWriter = new SheetWriter();
@@ -144,7 +138,9 @@ namespace SQL_Things
             sheetWriter.WriteToColumn(SheetWriter.Column.RockName, rockNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.PassFail, passFail);
-            sheetWriter.WriteToColumn(SheetWriter.Column.Developer, testPassFail);
+            sheetWriter.WriteToColumn(SheetWriter.Column.Developer, developer);
+            sheetWriter.NameSheet(@"database");
+            sheetWriter.DeleteExtraSheets();
             sheetWriter.SaveSheet();
         }
 
