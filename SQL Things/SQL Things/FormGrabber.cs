@@ -21,10 +21,7 @@ namespace SQL_Things
 
         public FormGrabber()
         {
-            serverConnection = new SqlConnection("server=localhost;" +
-                                                 "Trusted_Connection=yes;" +
-                                                 "database=TSE_Connector2; " +
-                                                 "connection timeout=30");
+            serverConnection = SQLGrabber.PrepareSQLServerConnection();
         }
 
         public void CheckForms()
@@ -124,13 +121,15 @@ namespace SQL_Things
             List<string> formNames = new List<string>();
             List<string> passFail = new List<string>();
             List<string> developer = new List<string>();
+            string[] configInfo = SQLGrabber.GrabConfig();
+            string databaseName = configInfo[1];
 
             foreach (Form form in forms)
             {
                 rockNames.Add(form.RockName);
                 formNames.Add(form.FormName);
                 passFail.Add((form.PassFail == true) ? "Pass" : "Fail");
-                developer.Add((form.PassFail == true) ? "PtS" : "");
+                developer.Add((form.PassFail == true) ? Constants.ToolName : "");
             }
 
             SheetWriter sheetWriter = new SheetWriter();
@@ -139,9 +138,9 @@ namespace SQL_Things
             sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.PassFail, passFail);
             sheetWriter.WriteToColumn(SheetWriter.Column.Developer, developer);
-            sheetWriter.NameSheet(@"database");
+            sheetWriter.NameSheet(databaseName);
             sheetWriter.DeleteExtraSheets();
-            sheetWriter.SaveSheet();
+            sheetWriter.SaveSheet(databaseName);
         }
 
         void CloseServerConnection()

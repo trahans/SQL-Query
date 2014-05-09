@@ -4,11 +4,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Security;
 
 namespace SQL_Things
 {
     class SQLGrabber
     {
+        public static SqlConnection PrepareSQLServerConnection()
+        {
+            SqlConnection serverConnection;
+
+            string[] configInfo = GrabConfig();
+            string server = configInfo[0];
+            string database = configInfo[1];
+            string userID = configInfo[2];
+            string password = configInfo[3];
+
+            SecureString securePassword = new SecureString();
+            foreach (char ch in password)
+                securePassword.AppendChar(ch);
+
+            securePassword.MakeReadOnly();
+            SqlCredential credentials = new SqlCredential(userID, securePassword);
+
+            /*
+            serverConnection = new SqlConnection("server=localhost;" +
+                                                 "Trusted_Connection=yes;" +
+                                                 "database=TSE_Connector2; " +
+                                                 "connection timeout=30");
+            */
+
+            serverConnection = new SqlConnection("server=" + server + ";" +
+                                                 "Trusted_Connection=no;" +
+                                                 "database=" + database + "; " +
+                                                 "connection timeout=30", credentials);
+            return serverConnection;
+        }
+
+        public static string[] GrabConfig()
+        {
+            return FileReader.ReadCSV(Constants.ConfigInfoFilePath);
+        }
+
         public static List<string> ListFromQuery(SqlConnection serverConnection, string query)
         {
             List<Object[]> rawQueryData;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -69,9 +70,10 @@ namespace SQL_Things
             }
         }
 
-        public void SaveSheet()
+        public void SaveSheet(string name)
         {
-            String fileName = @"Sheet1.xlsx";
+            string currentDirectory = Directory.GetCurrentDirectory();
+            String fileName = currentDirectory + @"\" + name + ".xlsx";
             excelApp.ActiveWorkbook.SaveAs(fileName);
         }
 

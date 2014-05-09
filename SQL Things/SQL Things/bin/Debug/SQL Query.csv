@@ -1,1 +1,0 @@
-SELECT DISTINCT RockName, State FROM dbo.tbl_DS_ConvertedBilling WHERE ReportedRate <> ImportedRate order by state

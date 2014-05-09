@@ -1,1 +1,0 @@
-SELECT DISTINCT RockName FROM dbo.tbl_DS_ConvertedBilling WHERE ReportedRate <> ImportedRate and RecordType = 'Tax'
