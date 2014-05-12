@@ -121,6 +121,7 @@ namespace SQL_Things
             List<string> formNames = new List<string>();
             List<string> passFail = new List<string>();
             List<string> developer = new List<string>();
+            
             string[] configInfo = SQLGrabber.GrabConfig();
             string databaseName = configInfo[1];
 
@@ -133,14 +134,14 @@ namespace SQL_Things
             }
 
             SheetWriter sheetWriter = new SheetWriter();
-            sheetWriter.WriteSheet();
+            sheetWriter.CreateWorksheet();
             sheetWriter.WriteToColumn(SheetWriter.Column.RockName, rockNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
             sheetWriter.WriteToColumn(SheetWriter.Column.PassFail, passFail);
             sheetWriter.WriteToColumn(SheetWriter.Column.Developer, developer);
             sheetWriter.NameSheet(databaseName);
             sheetWriter.DeleteExtraSheets();
-            sheetWriter.SaveSheet(databaseName);
+            sheetWriter.SaveWorkbookAsXLSX(databaseName);
         }
 
         void CloseServerConnection()

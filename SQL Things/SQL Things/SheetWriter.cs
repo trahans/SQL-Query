@@ -33,7 +33,7 @@ namespace SQL_Things
             excelApp.Visible = true;
         }
 
-        public void WriteSheet()
+        public void CreateWorksheet()
         {
 
             excelWorkbook = excelApp.Application.Workbooks.Add();
@@ -60,7 +60,7 @@ namespace SQL_Things
             }
         }
 
-        public void WriteToColumn(Column column, List<String> items)
+        public void WriteToColumn(Column column, List<string> items)
         {
             Excel.Worksheet currentWorksheet = (Excel.Worksheet)excelWorkbook.ActiveSheet;
 
@@ -70,28 +70,29 @@ namespace SQL_Things
             }
         }
 
-        public void SaveSheet(string name)
+        public void SaveWorkbookAsXLSX(string name)
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            String fileName = currentDirectory + @"\" + name + ".xlsx";
+            string fileName = currentDirectory + @"\" + name + ".xlsx";
+            int numAppend = 1;
+
+            while (File.Exists(fileName))
+            {
+                fileName = currentDirectory + @"\" + name + " " + numAppend.ToString() + ".xlsx";
+                numAppend++;
+            }
+            
             excelApp.ActiveWorkbook.SaveAs(fileName);
         }
 
         void FormatWorksheet(Excel.Worksheet worksheet)
         {
-            String rockNameTitle = @"RockName";
-            String formNameTitle = @"Form Name";
-            String passFailTitle = @"Pass/Fail/Pass with Condition";
-            String devSigTitle = @"Developer";
-            String qaSigTitle = @"QA";
-            String notesTitle = @"Notes";
-
-            worksheet.Cells[1, Column.RockName] = rockNameTitle;
-            worksheet.Cells[1, Column.FormName] = formNameTitle;
-            worksheet.Cells[1, Column.PassFail] = passFailTitle;
-            worksheet.Cells[1, Column.Developer] = devSigTitle;
-            worksheet.Cells[1, Column.QA] = qaSigTitle;
-            worksheet.Cells[1, Column.Notes] = notesTitle;
+            worksheet.Cells[1, Column.RockName] = Constants.RockNameTitle;
+            worksheet.Cells[1, Column.FormName] = Constants.FormNameTitle;
+            worksheet.Cells[1, Column.PassFail] = Constants.PassFailTitle;
+            worksheet.Cells[1, Column.Developer] = Constants.DevSigTitle;
+            worksheet.Cells[1, Column.QA] = Constants.QaSigTitle;
+            worksheet.Cells[1, Column.Notes] = Constants.NotesTitle;
 
         }
     }
