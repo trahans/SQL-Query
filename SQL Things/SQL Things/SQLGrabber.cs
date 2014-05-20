@@ -93,8 +93,8 @@ namespace SQL_Things
             }
             else
             {
-                Console.WriteLine("No rows found in query: " + query);
-                Console.ReadLine();
+                //Console.WriteLine("No rows found in query: " + query);
+               // Console.ReadLine();
             }
 
             reader.Close();

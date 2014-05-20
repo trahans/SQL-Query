@@ -13,7 +13,7 @@ namespace SQL_Things
     { 
 
         SqlConnection serverConnection;
-        List<Form> forms = new List<Form>();
+        List<TaxForm> forms = new List<TaxForm>();
         List<string> rockNames = new List<string>();
         List<string> missmatchingForms = new List<string>();
         List<string> blendedRates = new List<string>();
@@ -44,13 +44,13 @@ namespace SQL_Things
             try
             {
                 serverConnection.Open();
-                Console.WriteLine("Connection Established");
+               // Console.WriteLine("Connection Established");
                 return true;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Connection Failed" + ex.Message);
-                Console.ReadLine();
+               // Console.WriteLine("Connection Failed" + ex.Message);
+               // Console.ReadLine();
                 return false;
             }
         }
@@ -67,7 +67,7 @@ namespace SQL_Things
         {
             foreach (string rockName in rockNames)
             {
-                Form newForm = new Form();
+                TaxForm newForm = new TaxForm();
                 newForm.RockName = rockName;
                 forms.Add(newForm);
             }
@@ -75,7 +75,7 @@ namespace SQL_Things
 
         void TranscribeFormNamesToForms()
         {
-            foreach (Form form in forms)
+            foreach (TaxForm form in forms)
             {
                 form.FormName = rockNamesAndFormNames[form.RockName];
             }
@@ -88,7 +88,7 @@ namespace SQL_Things
 
         void FailMissmatchingRates()
         {
-            foreach (Form form in forms)
+            foreach (TaxForm form in forms)
             {
                 foreach (string rockName in missmatchingForms)
                 {
@@ -104,7 +104,7 @@ namespace SQL_Things
 
         void PassBlendedRates()
         {
-            foreach (Form form in forms)
+            foreach (TaxForm form in forms)
             {
                 foreach (string rockName in blendedRates)
                 {
@@ -125,7 +125,7 @@ namespace SQL_Things
             string[] configInfo = SQLGrabber.GrabConfig();
             string databaseName = configInfo[1];
 
-            foreach (Form form in forms)
+            foreach (TaxForm form in forms)
             {
                 rockNames.Add(form.RockName);
                 formNames.Add(form.FormName);
@@ -135,10 +135,10 @@ namespace SQL_Things
 
             SheetWriter sheetWriter = new SheetWriter();
             sheetWriter.CreateWorksheet();
-            sheetWriter.WriteToColumn(SheetWriter.Column.RockName, rockNames);
-            sheetWriter.WriteToColumn(SheetWriter.Column.FormName, formNames);
-            sheetWriter.WriteToColumn(SheetWriter.Column.PassFail, passFail);
-            sheetWriter.WriteToColumn(SheetWriter.Column.Developer, developer);
+            sheetWriter.WriteToColumn(Column.RockName, rockNames);
+            sheetWriter.WriteToColumn(Column.FormName, formNames);
+            sheetWriter.WriteToColumn(Column.PassFail, passFail);
+            sheetWriter.WriteToColumn(Column.Developer, developer);
             sheetWriter.NameSheet(databaseName);
             sheetWriter.DeleteExtraSheets();
             sheetWriter.SaveWorkbookAsXLSX(databaseName);
@@ -147,7 +147,7 @@ namespace SQL_Things
         void CloseServerConnection()
         {
             serverConnection.Close();
-            Console.WriteLine("Connection Closed");
+           // Console.WriteLine("Connection Closed");
         }
     }
 }

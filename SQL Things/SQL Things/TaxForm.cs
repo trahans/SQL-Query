@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace SQL_Things
 {
-    class Form
+    class TaxForm
     {
 
         public string RockName { get; set; }
         public string FormName { get; set; }
         public bool PassFail { get; set; }
 
-        public Form()
+        public TaxForm()
         {
             RockName = "";
             FormName = "";

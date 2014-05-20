@@ -6,3 +6,5 @@ C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL T
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.pdb
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\Interop.InteropExtensionLib.dll
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.csproj.ResolveComReference.cache
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL_Things.GUI.resources
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.csproj.GenerateResource.Cache

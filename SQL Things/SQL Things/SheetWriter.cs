@@ -14,18 +14,7 @@ namespace SQL_Things
 
         Excel.Application excelApp;
         Excel.Workbooks excelWorkbooks;
-        Excel.Workbook excelWorkbook;
-
-        public enum Column
-        {
-            RockName = 1,
-            FormName = 2,
-            PassFail = 3,
-            Developer = 4,
-            QA = 5,
-            Notes = 6
-        }
-        
+        Excel.Workbook excelWorkbook;     
 
         public SheetWriter()
         {
