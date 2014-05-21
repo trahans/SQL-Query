@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace SQL_Things
 {
-    //[Serializable]
+    [Serializable]
     public class Login
     {
         public string login;
