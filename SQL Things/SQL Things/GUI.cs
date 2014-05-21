@@ -19,9 +19,10 @@ namespace SQL_Things
 
         private void connectButton_Click(object sender, EventArgs e)
         {
-            //FormGrabber formGrabber = new FormGrabber();
-            //formGrabber.CheckForms();
+            FormGrabber formGrabber = new FormGrabber();
+            formGrabber.CheckForms();
 
+            /*
             List<string> testStrings = new List<string>() {"TEST 1", "TEST 2", "TEST 3"};
             List<Login> testLogins = new List<Login>();
 
@@ -34,6 +35,7 @@ namespace SQL_Things
 
             ServerSettings settings = new ServerSettings(testStrings,testLogins);
             ServerSettings.Save(settings, @"testConfigs.xml");
+             */
         }
     }
 }
