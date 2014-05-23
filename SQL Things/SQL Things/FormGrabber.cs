@@ -67,9 +67,12 @@ namespace SQL_Things
         {
             foreach (string rockName in rockNames)
             {
-                TaxForm newForm = new TaxForm();
-                newForm.RockName = rockName;
-                forms.Add(newForm);
+                if (rockNamesAndFormNames.ContainsKey(rockName))
+                {
+                    TaxForm newForm = new TaxForm();
+                    newForm.RockName = rockName;
+                    forms.Add(newForm);
+                }
             }
         }
 

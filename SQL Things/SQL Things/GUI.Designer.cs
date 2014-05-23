@@ -110,7 +110,7 @@
             this.Controls.Add(this.loginComboBox);
             this.Controls.Add(this.serverComboBox);
             this.Name = "GUI";
-            this.Text = "GUI";
+            this.Text = "Grimm TWEACer";
             this.ResumeLayout(false);
             this.PerformLayout();
 
