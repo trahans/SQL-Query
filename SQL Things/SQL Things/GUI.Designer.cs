@@ -1,4 +1,4 @@
-﻿namespace SQL_Things
+﻿namespace GrimmTWEACer
 {
     partial class GUI
     {
@@ -35,6 +35,7 @@
             this.loginLabel = new System.Windows.Forms.Label();
             this.passwordLabel = new System.Windows.Forms.Label();
             this.connectButton = new System.Windows.Forms.Button();
+            this.statusText = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // serverComboBox
@@ -44,6 +45,7 @@
             this.serverComboBox.Name = "serverComboBox";
             this.serverComboBox.Size = new System.Drawing.Size(121, 21);
             this.serverComboBox.TabIndex = 0;
+            this.serverComboBox.SelectedIndexChanged += new System.EventHandler(this.serverComboBox_SelectedIndexChanged);
             // 
             // loginComboBox
             // 
@@ -52,6 +54,7 @@
             this.loginComboBox.Name = "loginComboBox";
             this.loginComboBox.Size = new System.Drawing.Size(121, 21);
             this.loginComboBox.TabIndex = 0;
+            this.loginComboBox.SelectedIndexChanged += new System.EventHandler(this.loginComboBox_SelectedIndexChanged);
             // 
             // passwordTextBox
             // 
@@ -97,11 +100,21 @@
             this.connectButton.UseVisualStyleBackColor = true;
             this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
             // 
+            // statusText
+            // 
+            this.statusText.AutoSize = true;
+            this.statusText.Location = new System.Drawing.Point(13, 236);
+            this.statusText.Name = "statusText";
+            this.statusText.Size = new System.Drawing.Size(0, 13);
+            this.statusText.TabIndex = 4;
+            // 
             // GUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.statusText);
             this.Controls.Add(this.connectButton);
             this.Controls.Add(this.passwordLabel);
             this.Controls.Add(this.loginLabel);
@@ -125,5 +138,6 @@
         private System.Windows.Forms.Label loginLabel;
         private System.Windows.Forms.Label passwordLabel;
         private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.Label statusText;
     }
 }

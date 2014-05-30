@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using Excel = Microsoft.Office.Interop.Excel;
 
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
     class FormGrabber
     { 

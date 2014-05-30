@@ -9,41 +9,8 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
-    [Serializable]
-    public class LoginInfo : ISerializable
-    {
-        public string loginName;
-        public string password;
-
-        public LoginInfo()
-        {
-            loginName = null;
-            password = null;
-        }
-
-        public LoginInfo(string newLogin, string newPassword)
-        {
-            loginName = newLogin;
-            password = newPassword;
-        }
-
-        protected LoginInfo(SerializationInfo info, StreamingContext context)
-        {
-            loginName = info.GetString("login");
-            password = info.GetString("password");
-        }
-
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("login", loginName);
-            info.AddValue("password", password);
-        }
-
-    }
-
-
     [Serializable]
     public class ServerSettings
     {
@@ -74,7 +41,12 @@ namespace SQL_Things
 
         public static ServerSettings Load(string filePath)
         {
-            ServerSettings settings = new ServerSettings();
+            XmlSerializer deserializer = new XmlSerializer(typeof(ServerSettings));
+            TextReader textReader = new StreamReader(@filePath);
+            ServerSettings settings;
+            settings = (ServerSettings)deserializer.Deserialize(textReader);
+            textReader.Close();
+
             return settings;
         }
 

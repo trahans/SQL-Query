@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
     class Program
     {

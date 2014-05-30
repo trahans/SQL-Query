@@ -6,5 +6,17 @@ C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL T
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.pdb
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\Interop.InteropExtensionLib.dll
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.csproj.ResolveComReference.cache
-C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL_Things.GUI.resources
 C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\SQL Things.csproj.GenerateResource.Cache
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\EntityFramework.dll
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.Core.dll
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.dll
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\Moq.dll
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\EntityFramework.xml
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.pdb
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.xml
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.Core.pdb
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\FluentAssertions.Core.xml
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\bin\Debug\Moq.xml
+C:\Users\christopher.grimm\Documents\Repos\SQL Things\SQL Things\obj\Debug\GrimmTWEACer.GUI.resources

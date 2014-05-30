@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Office.Core;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
     class SheetWriter
     {

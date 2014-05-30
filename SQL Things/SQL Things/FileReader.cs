@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
     class FileReader
     {

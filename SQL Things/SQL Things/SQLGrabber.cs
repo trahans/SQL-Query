@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Security;
 
-namespace SQL_Things
+namespace GrimmTWEACer
 {
     class SQLGrabber
     {
@@ -27,17 +27,19 @@ namespace SQL_Things
             securePassword.MakeReadOnly();
             SqlCredential credentials = new SqlCredential(userID, securePassword);
 
-            /*
+            
             serverConnection = new SqlConnection("server=localhost;" +
                                                  "Trusted_Connection=yes;" +
                                                  "database=TSE_Connector2; " +
                                                  "connection timeout=30");
-            */
+            
 
+            /*
             serverConnection = new SqlConnection("server=" + server + ";" +
                                                  "Trusted_Connection=no;" +
                                                  "database=" + database + "; " +
                                                  "connection timeout=30", credentials);
+            */
             return serverConnection;
         }
 
